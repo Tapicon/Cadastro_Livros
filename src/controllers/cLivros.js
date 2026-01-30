@@ -11,10 +11,13 @@ export const listarLivros = async(req, res) => {
 export const cadastrarLivro = async(req, res) => {
     try{
         const { titulo_livro, autor_livro, cod_copia, isbn } = req.body;
-        await pool.query(`INSERT INTO "tbl_Livros" (titulo_livro, autor_livro, cod_copia, isbn) VALUES ('${titulo_livro}', '${autor_livro}', '${cod_copia}', '${isbn}')`);
+        await pool.query(`INSERT INTO "tbl_Livros" (titulo_livro, autor_livro, isbn) VALUES ('${titulo_livro}', '${autor_livro}', '${isbn}')`);
         return res.status(201).json({message:`Livro ${titulo_livro} cadastrado com sucesso.`});
     } catch(err){
         console.log(err)
+        if(err.code == 23505){
+            return res.status(500).json({message:"ERRO: Livro já cadastrado"})
+        }
         return res.status(500).json({message:`Erro no cadastro do livro`});
     }
 }
