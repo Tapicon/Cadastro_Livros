@@ -10,11 +10,18 @@ export const listarPessoas = async (req,res) => {
 }
 
 export const cadastrarPessoa = async (req, res) => {
-    const { nome, cpf, dataNasc } = req.body
+    const { nome_pessoa, cpf_pessoa, datanasc } = req.body
+    console.log(cpf_pessoa)
     try{
-        const result = await pool.query(`insert into "tbl_Pessoas" (nome_Pessoa,cpf_Pessoa,dataNasc) values (${nome},${cpf},${dataNasc})`)
-        return res.status(201).json(result)
+        await pool.query(`insert into "tbl_Pessoas" (nome_pessoa,cpf_pessoa,datanasc) values ('${nome_pessoa}','${cpf_pessoa}','${datanasc}')`)
+        return res.status(201).json({message:`Usuário ${nome_pessoa} cadastrado com sucesso.`})
     } catch(err){
+        console.log(err)
+        if(err.code == 23505){
+            return res.status(500).json({message:"ERRO: CPF já cadastrado"})
+        }
         return res.status(500).json({message:err})
     }
 }
+
+//export const excluir pessoas
